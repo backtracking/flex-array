@@ -31,6 +31,18 @@ let empty =
 let length a =
   a.size
 
+let rec make_tree n v =
+  if n = 0 then Empty
+  else if n mod 2 = 1 then
+    let t = make_tree (n / 2) v in
+    Node (t, v, t)
+  else
+    Node (make_tree (n / 2) v, v, make_tree (n / 2 - 1) v)
+
+let make n v =
+  if n < 0 then invalid_arg "make";
+  { size = n; tree = make_tree n v }
+
 let rec get_tree t i = match t with
   | Empty -> assert false
   | Node (l, x, r) ->

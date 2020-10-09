@@ -19,5 +19,17 @@ let () =
     (iter (fun j -> assert (j = !next); incr next)) a;
   in
   for m = 0 to 257 do test m done
-  (* test 1000000 *)
+
+let () =
+  let a = make 0 42 in
+  assert (length a = 0);
+  let a = make 1729 42 in
+  assert (length a = 1729);
+  for i = 0 to 1728 do assert (get a i = 42) done;
+  let b = cons 1 (snoc a 2) in
+  assert (length b = 1731);
+  assert (get b 0 = 1);
+  assert (get b 1730 = 2);
+  assert (liat (tail b) = a);
+  ()
 
