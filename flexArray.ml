@@ -1,19 +1,21 @@
+(**************************************************************************)
+(*                                                                        *)
+(*  Copyright (C) Jean-Christophe Filliatre                               *)
+(*                                                                        *)
+(*  This software is free software; you can redistribute it and/or        *)
+(*  modify it under the terms of the GNU Library General Public           *)
+(*  License version 2.1, with the special exception on linking            *)
+(*  described in file LICENSE.                                            *)
+(*                                                                        *)
+(*  This software is distributed in the hope that it will be useful,      *)
+(*  but WITHOUT ANY WARRANTY; without even the implied warranty of        *)
+(*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                  *)
+(*                                                                        *)
+(**************************************************************************)
 
-(** Flexible arrays
+(** A flexible array is a Braun tree (a cute data structure that can
+   be used for other purposes, e.g. to implement priority queues).
 
-    Flexible arrays are arrays whose size can be changed by adding or
-    removing elements at either end (one at a time).
-
-    This is an implementation of flexible arrays using Braun trees,
-    following
-
-      Rob Hoogerwoord
-      A logarithmic implementation of flexible arrays
-      http://alexandria.tue.nl/repository/notdare/772185.pdf
-
-    All operations (get, set, le, lr, he, hr) have logarithmic complexity.
-
-    Note: Braun trees can also be used to implement priority queues.
 *)
 
 type 'a tree = Empty | Node of 'a tree * 'a * 'a tree
@@ -29,63 +31,64 @@ let empty =
 let length a =
   a.size
 
-let is_empty a =
-  a.size = 0
-
 let rec get_tree t i = match t with
-  | Empty -> invalid_arg "get"
+  | Empty -> assert false
   | Node (l, x, r) ->
     if i = 0 then x
     else if i mod 2 = 1 then get_tree l (i / 2) else get_tree r (i / 2 - 1)
 
 let get a i =
+  if i < 0 || i >= a.size then invalid_arg "get";
   get_tree a.tree i
 
 let rec set_tree t i v = match t with
-  | Empty -> invalid_arg "set"
+  | Empty -> assert false
   | Node (l, x, r) ->
     if i = 0 then Node (l, v, r)
     else if i mod 2 = 1 then Node (set_tree l (i / 2) v, x, r)
-       else Node (l, x, set_tree r (i / 2 - 1) v)
+    else Node (l, x, set_tree r (i / 2 - 1) v)
 
 let set a i v =
+  if i < 0 || i >= a.size then invalid_arg "get";
   { a with tree = set_tree a.tree i v }
 
 (* low extension *)
-let rec le_aux v = function
+let rec cons_aux v = function
   | Empty -> Node (Empty, v, Empty)
-  | Node (l, x, r) -> Node (le_aux x r, v, l)
+  | Node (l, x, r) -> Node (cons_aux x r, v, l)
 
-let le v a =
-  { size = a.size + 1; tree = le_aux v a.tree }
+let cons v a =
+  { size = a.size + 1; tree = cons_aux v a.tree }
 
 (* low removal *)
-let rec lr_aux = function
-  | Empty -> invalid_arg "lr"
+let rec tail_aux = function
+  | Empty -> assert false
   | Node (Empty, _, Empty) -> Empty
-  | Node (l, _, r) -> Node (r, get_tree l 0, lr_aux l)
+  | Node (l, _, r) -> Node (r, get_tree l 0, tail_aux l)
 
-let lr a =
-  { size = a.size - 1; tree = lr_aux a.tree }
+let tail a =
+  if a.size = 0 then invalid_arg "tail";
+  { size = a.size - 1; tree = tail_aux a.tree }
 
 (* high extension *)
-let rec he_aux s t v = match t with
+let rec snoc_aux s t v = match t with
   | Empty -> Node (Empty, v, Empty)
-  | Node (l, x, r) -> if s mod 2 = 1 then Node (he_aux (s / 2) l v, x, r)
-                                     else Node (l, x, he_aux (s / 2 - 1) r v)
+  | Node (l, x, r) -> if s mod 2 = 1 then Node (snoc_aux (s / 2) l v, x, r)
+                                     else Node (l, x, snoc_aux (s / 2 - 1) r v)
 
-let he a v =
-  { size = a.size + 1; tree = he_aux a.size a.tree v }
+let snoc a v =
+  { size = a.size + 1; tree = snoc_aux a.size a.tree v }
 
 (* high removal *)
-let rec hr_aux s = function
-  | Empty -> invalid_arg "hr"
+let rec liat_aux s = function
+  | Empty -> assert false
   | Node (Empty, _, Empty) -> Empty
-  | Node (l, x, r) -> if s mod 2 = 0 then Node (hr_aux (s / 2) l, x, r)
-                                   else Node (l, x, hr_aux (s / 2) r)
+  | Node (l, x, r) -> if s mod 2 = 0 then Node (liat_aux (s / 2) l, x, r)
+                                     else Node (l, x, liat_aux (s / 2) r)
 
-let hr a =
-  { size = a.size - 1; tree = hr_aux a.size a.tree }
+let liat a =
+  if a.size = 0 then invalid_arg "liat";
+  { size = a.size - 1; tree = liat_aux a.size a.tree }
 
 let iter f a =
   let add t q = if t <> Empty then Queue.add t q in

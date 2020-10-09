@@ -3,16 +3,16 @@ open FlexArray
 
 let () =
   let test m =
-    let rec fill a i = if i = m then a else fill (he a i) (i + 1) in
+    let rec fill a i = if i = m then a else fill (snoc a i) (i + 1) in
     let a = fill empty 0 in
     assert (length a = m);
-    let a = le 0 a  in
+    let a = cons 0 a  in
     assert (length a = m + 1);
-    let a = lr a in
+    let a = tail a in
     assert (length a = m);
-    let a = he a m in
+    let a = snoc a m in
     assert (length a = m + 1);
-    let a = hr a in
+    let a = liat a in
     assert (length a = m);
     for i = 0 to m - 1 do assert (get a i = i) done;
     let next = ref 0 in
