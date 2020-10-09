@@ -1,5 +1,5 @@
 
-open FlexArray
+open Flex_array
 
 let () =
   let test m =

@@ -1,8 +1,9 @@
 (library
- (public_name flexArray)
- (modules flexArray))
+ (public_name flex-array)
+ (name flex_array)
+ (modules flex_array))
 
 (test
  (name test)
  (modules test)
- (libraries flexArray))
+ (libraries flex-array))
