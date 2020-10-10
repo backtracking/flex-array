@@ -6,4 +6,4 @@
 (test
  (name test)
  (modules test)
- (libraries flex-array))
+ (libraries flex-array alcotest))
