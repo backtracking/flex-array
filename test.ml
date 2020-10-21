@@ -13,6 +13,21 @@ let pp fmt a =
 
 let fa : int t Alcotest.testable = Alcotest.testable pp (=)
 let eq_fa = Alcotest.(check fa)
+let raises = Alcotest.check_raises
+
+let test0 () =
+  raises "make" (Invalid_argument "make") (fun () -> ignore (make (-1) 0));
+  let a = empty in
+  raises "get" (Invalid_argument "get") (fun () -> get a 0);
+  raises "set" (Invalid_argument "set") (fun () -> ignore (set a 0 1));
+  raises "tail" (Invalid_argument "tail") (fun () -> ignore (tail a));
+  raises "liat" (Invalid_argument "liat") (fun () -> ignore (liat a));
+  let a = make 10 0 in
+  raises "get" (Invalid_argument "get") (fun () -> ignore (get a (-1)));
+  raises "get" (Invalid_argument "get") (fun () -> ignore (get a 10));
+  raises "set" (Invalid_argument "set") (fun () -> ignore (set a (-1) 1));
+  raises "set" (Invalid_argument "set") (fun () -> ignore (set a 10 1));
+  ()
 
 let test1 m =
   let rec fill a i = if i = m then a else fill (snoc a i) (i + 1) in
@@ -58,7 +73,8 @@ let test3 () =
 let () =
   Alcotest.run "Flex_array"
     ["quick tests",
-      [Alcotest.test_case "test1" `Quick test1;
+      [Alcotest.test_case "test0" `Quick test0;
+       Alcotest.test_case "test1" `Quick test1;
        Alcotest.test_case "test2" `Quick test2;];
      "long tests",
       [Alcotest.test_case "test3" `Slow test3;];

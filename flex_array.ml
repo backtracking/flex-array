@@ -61,7 +61,7 @@ let rec set_tree t i v = match t with
     else Node (l, x, set_tree r (i / 2 - 1) v)
 
 let set a i v =
-  if i < 0 || i >= a.size then invalid_arg "get";
+  if i < 0 || i >= a.size then invalid_arg "set";
   { a with tree = set_tree a.tree i v }
 
 (* low extension *)
