@@ -1,4 +1,4 @@
-# flexArray
+# flex-array
 OCaml implementation of flexible arrays
 
 Flexible arrays are arrays whose size can be changed by adding or
