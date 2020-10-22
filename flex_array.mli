@@ -29,7 +29,7 @@
     have logarithmic time complexity and logarithmic stack space.
 *)
 
-type 'a t
+type +'a t
 (** The type of flexible arrays.
     This is an immutable data structure.
     Values of type ['a t] can be compared using structural equality [=]
