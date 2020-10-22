@@ -13,7 +13,7 @@
 (*                                                                        *)
 (**************************************************************************)
 
-(** Flexible arrays
+(** Flexible arrays.
 
     Flexible arrays are arrays whose size can be changed by adding or
     removing elements at either end (one at a time).
@@ -25,8 +25,8 @@
       A logarithmic implementation of flexible arrays
       http://alexandria.tue.nl/repository/notdare/772185.pdf
 
-    All operations (get, set, cons, tail, snoc, liat) have logarithmic
-    complexity.
+    All operations ([get], [set], [cons], [tail], [snoc], [liat])
+    have logarithmic time complexity and logarithmic stack space.
 *)
 
 type 'a t
@@ -72,8 +72,27 @@ val liat: 'a t -> 'a t
     end of array [a].
     Raises [Invalid_argument] if [a] has length 0. *)
 
+(** {1 Iterators} *)
+
 val iter: ('a -> unit) -> 'a t -> unit
 (** [iter f a] applies function [f] in turn to all the elements of [a].
     It is equivalent to [f (get a 0); f (get a 1); ...;
-    f (get a. (length a - 1); ()] but runs faster.
-    Time complexity O(length a). *)
+    f (get a (n - 1); ()] where [n] is the length of the array [a],
+    but runs faster.
+    Time complexity O(n). Space complexity O(n). Constant stack space. *)
+
+val iteri: (int -> 'a -> unit) -> 'a t -> unit
+(** Same as {!iter}, but the
+    function is applied with the index of the element as first argument,
+    and the element itself as second argument. *)
+
+val fold : ('a -> 'b -> 'a) -> 'a -> 'b t -> 'a
+(** [fold f x a] computes
+    [f (... (f (f x (get a 0)) (get a 1)) ...) (get a (n-1))],
+    where [n] is the length of the array [a],
+    but runs faster.
+    Time complexity O(n). Space complexity O(n). Constant stack space. *)
+
+val foldi : ('a -> int -> 'b -> 'a) -> 'a -> 'b t -> 'a
+(** Same as {!fold}, but the
+    function is applied with the index of the element as second argument. *)

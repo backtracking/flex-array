@@ -102,24 +102,38 @@ let liat a =
   if a.size = 0 then invalid_arg "liat";
   { size = a.size - 1; tree = liat_aux a.size a.tree }
 
-let iter f a =
+let foldi f acc a =
   let add t q = if t <> Empty then Queue.add t q in
-  let rec loop n current (left, right as next) =
-    if n = 0 then
+  let rec loop acc i current (left, right as next) =
+    if i = a.size then begin
       assert (Queue.is_empty current &&
-              Queue.is_empty left && Queue.is_empty right)
-    else if Queue.is_empty current then begin
+              Queue.is_empty left && Queue.is_empty right);
+      acc
+    end else if Queue.is_empty current then begin
       Queue.transfer right left;
-      loop n left (current, right)
+      loop acc i left (current, right)
     end else begin match Queue.pop current with
       | Empty ->
           assert false
       | Node (l, x, r) ->
-          f x; add l left; add r right; loop (n - 1) current next
+          let acc = f acc i x in
+          add l left;
+          add r right;
+          loop acc (i + 1) current next
     end in
   if a.size > 0 then begin
     let start = Queue.create () in
     Queue.add a.tree start;
-    loop a.size start (Queue.create (), Queue.create ())
-  end
+    loop acc 0 start (Queue.create (), Queue.create ())
+  end else
+    acc
+
+let iteri f a =
+  foldi (fun () i x -> f i x) () a
+
+let iter f a =
+  foldi (fun () _ x -> f x) () a
+
+let fold f acc a =
+  foldi (fun acc _ x -> f acc x) acc a
 
