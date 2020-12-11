@@ -71,6 +71,14 @@ let test2 () =
   ()
 
 let test3 () =
+  for n = 0 to 100 do
+    let a = Array.init n (fun _ -> Random.int (2 * n + 1)) in
+    let fa = of_array a in
+    eqint "length" n (length fa);
+    for i = 0 to n - 1 do eqint "get" a.(i) (get fa i) done
+  done
+
+let test4 () =
   let n = 1_000_000 in
   let rec loop a i = if i = n then a else loop (set a i i) (i + 1) in
   let a = loop (make n 0) 0 in
@@ -84,7 +92,8 @@ let () =
     ["quick tests",
       [Alcotest.test_case "test0" `Quick test0;
        Alcotest.test_case "test1" `Quick test1;
-       Alcotest.test_case "test2" `Quick test2;];
+       Alcotest.test_case "test2" `Quick test2;
+       Alcotest.test_case "test3" `Quick test3;];
      "long tests",
-      [Alcotest.test_case "test3" `Slow test3;];
+      [Alcotest.test_case "test4" `Slow test4;];
     ]

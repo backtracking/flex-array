@@ -43,6 +43,22 @@ let make n v =
   if n < 0 then invalid_arg "make";
   { size = n; tree = make_tree n v }
 
+let rec init_tree n f a b = (* flexible array for f(ai+b) *)
+  if n = 0 then
+    Empty
+  else
+    let r = (n - 1) / 2 in
+    let l = n - 1 - r in
+    Node (init_tree l f (2*a) (a+b),
+          f b,
+          init_tree r f (2*a) (2*a+b))
+
+let init n f =
+  { size = n; tree = init_tree n f 1 0 }
+
+let of_array a =
+  init (Array.length a) (Array.get a)
+
 let rec get_tree t i = match t with
   | Empty -> assert false
   | Node (l, x, r) ->
@@ -101,6 +117,13 @@ let rec liat_aux s = function
 let liat a =
   if a.size = 0 then invalid_arg "liat";
   { size = a.size - 1; tree = liat_aux a.size a.tree }
+
+let map f a =
+  let rec map = function
+    | Empty -> Empty
+    | Node (l, x, r) -> Node (map l, f x, map r) in
+  { a with tree = map a.tree }
+
 
 let foldi f acc a =
   let add t q = if t <> Empty then Queue.add t q in

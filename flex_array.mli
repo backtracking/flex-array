@@ -39,6 +39,10 @@ val empty: 'a t
 
 val make: int -> 'a -> 'a t
 
+val init: int -> (int -> 'a) -> 'a t
+
+val of_array: 'a array -> 'a t
+
 val length: 'a t ->  int
 (** Time complexity O(1) *)
 
@@ -96,3 +100,5 @@ val fold : ('a -> 'b -> 'a) -> 'a -> 'b t -> 'a
 val foldi : ('a -> int -> 'b -> 'a) -> 'a -> 'b t -> 'a
 (** Same as {!fold}, but the
     function is applied with the index of the element as second argument. *)
+
+val map: ('a -> 'b) -> 'a t -> 'b t
