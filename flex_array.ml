@@ -14,8 +14,20 @@
 (**************************************************************************)
 
 (** A flexible array is a Braun tree (a cute data structure that can
-   be used for other purposes, e.g. to implement priority queues).
+    be used for other purposes, e.g. to implement priority queues).
 
+    This is an implementation of flexible arrays using Braun trees,
+    following
+
+      Rob Hoogerwoord
+      A logarithmic implementation of flexible arrays
+      http://alexandria.tue.nl/repository/notdare/772185.pdf
+
+    See also
+
+      Three Algorithms on Braun Trees (Functional Pearl)
+      Chris Okasaki
+      J. Functional Programming 7 (6) 661–666, November 1997
 *)
 
 type 'a tree = Empty | Node of 'a tree * 'a * 'a tree
@@ -31,17 +43,20 @@ let empty =
 let length a =
   a.size
 
-let rec make_tree n v =
-  if n = 0 then Empty
+(* returns (l,r) with l of size n+1 and r of size n *)
+let rec make_tree2 n v =
+  if n = 0 then
+    Node (Empty, v, Empty), Empty
   else if n mod 2 = 1 then
-    let t = make_tree (n / 2) v in
-    Node (t, v, t)
+    let l, r = make_tree2 (n / 2) v in
+    Node (l, v, r), Node (r, v, r)
   else
-    Node (make_tree (n / 2) v, v, make_tree (n / 2 - 1) v)
+    let l, r = make_tree2 (n / 2 - 1) v in
+    Node (l, v, l), Node (l, v, r)
 
 let make n v =
   if n < 0 then invalid_arg "make";
-  { size = n; tree = make_tree n v }
+  { size = n; tree = snd (make_tree2 n v) }
 
 let rec init_tree n f a b = (* flexible array for f(ai+b) *)
   if n = 0 then

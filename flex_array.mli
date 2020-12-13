@@ -38,13 +38,22 @@ type +'a t
 val empty: 'a t
 
 val make: int -> 'a -> 'a t
+(** [make n v] returns a flexible array of size [n], initialized with [v].
+    All  the elements of this new array are physically equal to [v]
+    (in the sense of the [==] predicate).
+    Time complexity O(log n). *)
 
 val init: int -> (int -> 'a) -> 'a t
+(** [init n f] returns a flexible array of size [n], with elements
+    [f 0, f 1, ..., f (n-1)]. Time complexity O(n).
+    Caveat: function [f] is applied only once per index, but not
+    in increasing order of indices. *)
 
 val of_array: 'a array -> 'a t
+(** Merely a shortcut built over [init]. *)
 
 val length: 'a t ->  int
-(** Time complexity O(1) *)
+(** Time complexity O(1). *)
 
 val get: 'a t -> int -> 'a
 (** [get a i] returns the element at index [i] in array [a].
@@ -102,3 +111,5 @@ val foldi : ('a -> int -> 'b -> 'a) -> 'a -> 'b t -> 'a
     function is applied with the index of the element as second argument. *)
 
 val map: ('a -> 'b) -> 'a t -> 'b t
+(** [map f a] returns a new flexible array with elements [f (get a 0), ...,
+    f (get a (n-1)] where [n] is the length of [a]. *)
