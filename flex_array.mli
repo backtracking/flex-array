@@ -50,7 +50,14 @@ val init: int -> (int -> 'a) -> 'a t
     in increasing order of indices. *)
 
 val of_array: 'a array -> 'a t
-(** Merely a shortcut built over [init]. *)
+(** [of_array a] returns a flexible array of size [List.length l],
+    with the elements of [l] in order. Time complexity O(n).
+    Merely a shortcut built over [init]. *)
+
+val of_list: 'a list -> 'a t
+(** [of_list l] returns a flexible array of size [List.length l],
+    with the elements of [l] in order. Time complexity O(n).
+    Logarithmic stack space. *)
 
 val length: 'a t ->  int
 (** Time complexity O(1). *)

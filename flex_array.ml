@@ -74,6 +74,33 @@ let init n f =
 let of_array a =
   init (Array.length a) (Array.get a)
 
+(** of_list, following Okasaki's paper *)
+
+let rec take acc k = function
+  | [] -> List.rev acc, []
+  | l when k = 0 -> List.rev acc, l
+  | x :: l -> take (x :: acc) (k - 1) l
+
+let rec map3 acc xl yl zl = match xl, yl, zl with
+  | _, [], _ -> List.rev acc
+  | x :: xl, y :: yl, z :: zl -> map3 (Node (x, y, z) :: acc) xl yl zl
+  | [], y :: yl, z :: zl -> map3 (Node (Empty, y, z) :: acc) [] yl zl
+  | x :: xl, y :: yl, [] -> map3 (Node (x, y, Empty) :: acc) xl yl []
+  | [], y :: yl, [] -> map3 (Node (Empty, y, Empty) :: acc) [] yl []
+
+let of_list l =
+  let rec rows k = function
+    | [] -> []
+    | vl -> let r, vl = take [] k vl in (k, r) :: rows (2 * k) vl in
+  let rec build = function
+    | [] -> [Empty]
+    | (k, vl) :: rows ->
+        let ll, rl = take [] k (build rows) in
+        map3 [] ll vl rl in
+  { size = List.length l; tree = List.hd (build (rows 1 l)) }
+
+(** get and set *)
+
 let rec get_tree t i = match t with
   | Empty -> assert false
   | Node (l, x, r) ->
@@ -94,6 +121,8 @@ let rec set_tree t i v = match t with
 let set a i v =
   if i < 0 || i >= a.size then invalid_arg "set";
   { a with tree = set_tree a.tree i v }
+
+(** extension/removal on both sides *)
 
 (* low extension *)
 let rec cons_aux v = function
@@ -132,6 +161,8 @@ let rec liat_aux s = function
 let liat a =
   if a.size = 0 then invalid_arg "liat";
   { size = a.size - 1; tree = liat_aux a.size a.tree }
+
+(** Iterators *)
 
 let map f a =
   let rec map = function

@@ -79,6 +79,17 @@ let test3 () =
   done
 
 let test4 () =
+  let rec build n = function
+    | [] -> [] | _ when n = 0 -> [] | x :: l -> x :: build (n-1) l in
+  let fib = [0; 1; 1; 2; 3; 5; 8; 13; 21; 34; 55] in
+  for n = 0 to 10 do
+    let l = build n fib in
+    let a = of_list l in
+    eqint "length" n (length a);
+    for i = 0 to n-1 do eqint "get" (List.nth l i) (get a i) done
+  done
+
+let testl1 () =
   let n = 1_000_000 in
   let rec loop a i = if i = n then a else loop (set a i i) (i + 1) in
   let a = loop (make n 0) 0 in
@@ -87,13 +98,25 @@ let test4 () =
   iter (fun x -> s := !s + x) a;
   eqint "sum" (n*(n-1)/2) !s
 
+let testl2 () =
+  let n = 1_000_000 in
+  let rec make acc i = if i < 0 then acc else make (i :: acc) (i - 1) in
+  let l = make [] (n - 1) in
+  let a = of_list l in
+  eqint "length" n (length a);
+  for i = 0 to n - 1 do eqint "get" i (get a i) done
+
 let () =
   Alcotest.run "Flex_array"
     ["quick tests",
       [Alcotest.test_case "test0" `Quick test0;
        Alcotest.test_case "test1" `Quick test1;
        Alcotest.test_case "test2" `Quick test2;
-       Alcotest.test_case "test3" `Quick test3;];
+       Alcotest.test_case "test3" `Quick test3;
+       Alcotest.test_case "test4" `Quick test4;
+      ];
      "long tests",
-      [Alcotest.test_case "test4" `Slow test4;];
+      [Alcotest.test_case "test1" `Slow testl1;
+       Alcotest.test_case "test2" `Slow testl2;
+      ];
     ]
