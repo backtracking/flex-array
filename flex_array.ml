@@ -139,7 +139,6 @@ let map f a =
     | Node (l, x, r) -> Node (map l, f x, map r) in
   { a with tree = map a.tree }
 
-
 let foldi f acc a =
   let add t q = if t <> Empty then Queue.add t q in
   let rec loop acc i current (left, right as next) =
