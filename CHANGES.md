@@ -1,4 +1,6 @@
 
+  - added `pp`
+
 # 1.1.0
   - improved `make` (now O(log n))
   - added `init`, `of_array`, `map`, `of_list`

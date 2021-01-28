@@ -121,8 +121,10 @@ val map: ('a -> 'b) -> 'a t -> 'b t
 (** [map f a] returns a new flexible array with elements [f (get a 0), ...,
     f (get a (n-1)] where [n] is the length of [a]. *)
 
-val pp: ?pp_sep:(Format.formatter -> unit -> unit) -> (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a t -> unit
-(** [pp ?pp_sep pp_v fmt a] prints items of flexible array [a] using [pp_v] to print each item, and calling [pp_sep] between items ([pp_sep] defaults to {!Format.pp_print_cut}. Does nothing on empty flexible arrays.)
+val pp: ?pp_sep:(Format.formatter -> unit -> unit) ->
+        (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a t -> unit
+(** [pp ?pp_sep pp_v fmt a] prints items of flexible array [a] using [pp_v]
+    to print each item, and calling [pp_sep] between items ([pp_sep] defaults
+    to {!Format.pp_print_cut}. Does nothing on empty flexible arrays.)
 
-    @since 1.2.0
-*)
+    @since 1.2.0 *)

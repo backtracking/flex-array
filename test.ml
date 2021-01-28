@@ -3,13 +3,7 @@ open Flex_array
 
 let eqint = Alcotest.(check int)
 
-let pp fmt a =
-  Format.fprintf fmt "@[[";
-  for i = 0 to length a - 1 do
-    Format.fprintf fmt "%d" (get a i);
-    if i < length a - 1 then Format.fprintf fmt ",@ "
-  done;
-  Format.fprintf fmt "@]]"
+let pp = pp Format.pp_print_int
 
 let fa : int t Alcotest.testable = Alcotest.testable pp (=)
 let eq_fa = Alcotest.(check fa)
