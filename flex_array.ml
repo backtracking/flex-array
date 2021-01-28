@@ -205,3 +205,10 @@ let iter f a =
 let fold f acc a =
   foldi (fun acc _ x -> f acc x) acc a
 
+let pp ?(pp_sep = Format.pp_print_cut) pp_v fmt a =
+  let len = length a in
+  for i = 0 to len - 2 do
+    pp_v fmt (get a i);
+    pp_sep fmt ();
+  done;
+  if len > 0 then pp_v fmt (get a (len - 1))
