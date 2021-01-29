@@ -1,5 +1,5 @@
 
-  - added `pp`
+  - added `pp`, `mapi`
 
 # 1.1.0
   - improved `make` (now O(log n))

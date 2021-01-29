@@ -119,7 +119,13 @@ val foldi : ('a -> int -> 'b -> 'a) -> 'a -> 'b t -> 'a
 
 val map: ('a -> 'b) -> 'a t -> 'b t
 (** [map f a] returns a new flexible array with elements [f (get a 0), ...,
-    f (get a (n-1)] where [n] is the length of [a]. *)
+    f (get a (n-1)] where [n] is the length of [a].
+    Time complexity O(n). Logarithmic stack space. *)
+
+val mapi: (int -> 'a -> 'b) -> 'a t -> 'b t
+(** [mapi f a] returns a new flexible array with elements [f 0 (get a 0), ...,
+    f (n-1) (get a (n-1)] where [n] is the length of [a].
+    Time complexity O(n). Logarithmic stack space. *)
 
 val pp: ?pp_sep:(Format.formatter -> unit -> unit) ->
         (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a t -> unit

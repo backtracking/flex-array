@@ -46,7 +46,10 @@ let test1 m =
   if m > 0 then eqint "fold order" (List.hd l) (m - 1);
   let l = foldi (fun acc i x -> eqint "foldi" i x; x :: acc) [] a in
   eqint "foldi length" (List.length l) m;
-  if m > 0 then eqint "foldi order" (List.hd l) (m - 1)
+  if m > 0 then eqint "foldi order" (List.hd l) (m - 1);
+  let b = mapi (fun i x -> i + x) a in
+  eqint "mapi length" (length b) m;
+  for i = 0 to m - 1 do eqint "get" (2*i) (get b i) done
 
 let test1 () =
   for m = 0 to 42 do test1 m done
