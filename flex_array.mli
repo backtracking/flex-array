@@ -50,8 +50,8 @@ val init: int -> (int -> 'a) -> 'a t
     in increasing order of indices. *)
 
 val of_array: 'a array -> 'a t
-(** [of_array a] returns a flexible array of size [List.length l],
-    with the elements of [l] in order. Time complexity O(n).
+(** [of_array a] returns a flexible array of size [Array.length a],
+    with the elements of [a] in order. Time complexity O(n).
     Merely a shortcut built over [init]. *)
 
 val of_list: 'a list -> 'a t
@@ -128,7 +128,7 @@ val mapi: (int -> 'a -> 'b) -> 'a t -> 'b t
     Time complexity O(n). Logarithmic stack space. *)
 
 val pp: ?pp_sep:(Format.formatter -> unit -> unit) ->
-        (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a t -> unit
+  (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a t -> unit
 (** [pp ?pp_sep pp_v fmt a] prints items of flexible array [a] using [pp_v]
     to print each item, and calling [pp_sep] between items ([pp_sep] defaults
     to {!Format.pp_print_cut}. Does nothing on empty flexible arrays.)
