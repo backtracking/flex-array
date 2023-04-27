@@ -76,14 +76,16 @@ let test3 () =
   done
 
 let test4 () =
+  let arr = Array.make 21 0 in
+  arr.(1) <- 1; for i = 2 to 20 do arr.(i) <- arr.(i-2) + arr.(i-1) done;
+  let fib = Array.to_list arr in
   let rec build n = function
     | [] -> [] | _ when n = 0 -> [] | x :: l -> x :: build (n-1) l in
-  let fib = [0; 1; 1; 2; 3; 5; 8; 13; 21; 34; 55] in
-  for n = 0 to 10 do
+  for n = 0 to 20 do
     let l = build n fib in
     let a = of_list l in
     eqint "length" n (length a);
-    for i = 0 to n-1 do eqint "get" (List.nth l i) (get a i) done
+    for i = 0 to n-1 do eqint "get" arr.(i) (get a i) done
   done
 
 let testl1 () =

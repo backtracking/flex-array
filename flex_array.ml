@@ -82,22 +82,23 @@ let rec take acc k = function
   | x :: l -> take (x :: acc) (k - 1) l
 
 let rec map3 acc xl yl zl = match xl, yl, zl with
-  | _, [], _ -> List.rev acc
-  | x :: xl, y :: yl, z :: zl -> map3 (Node (x, y, z) :: acc) xl yl zl
-  | [], y :: yl, z :: zl -> map3 (Node (Empty, y, z) :: acc) [] yl zl
-  | x :: xl, y :: yl, [] -> map3 (Node (x, y, Empty) :: acc) xl yl []
-  | [], y :: yl, [] -> map3 (Node (Empty, y, Empty) :: acc) [] yl []
+  | _,       [],      _       -> List.rev acc
+  | x :: xl, y :: yl, z :: zl -> map3 (Node (x,     y, z    ) :: acc) xl yl zl
+  | x :: xl, y :: yl, []      -> map3 (Node (x,     y, Empty) :: acc) xl yl []
+  | [],      y :: yl, []      -> map3 (Node (Empty, y, Empty) :: acc) [] yl []
+  | _ -> assert false
+
+let rec build k vl =
+  if vl = [] then
+    [Empty]
+  else
+    let xl, vl = take [] k vl in
+    let tl = build (2*k) vl in
+    let ll, rl = take [] k tl in
+    map3 [] ll xl rl
 
 let of_list l =
-  let rec rows k = function
-    | [] -> []
-    | vl -> let r, vl = take [] k vl in (k, r) :: rows (2 * k) vl in
-  let rec build = function
-    | [] -> [Empty]
-    | (k, vl) :: rows ->
-        let ll, rl = take [] k (build rows) in
-        map3 [] ll vl rl in
-  { size = List.length l; tree = List.hd (build (rows 1 l)) }
+  { size = List.length l; tree = List.hd (build 1 l) }
 
 (** get and set *)
 
