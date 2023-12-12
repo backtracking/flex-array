@@ -1,5 +1,5 @@
-bitv - Objective Caml bit vectors library
-Copyright (C) 1999 Jean-Christophe FILLIATRE
+flex-array - OCaml implementation of flexible arrays
+Copyright (C) 2020 Jean-Christophe FILLIATRE
 
 This software is free software; you can redistribute it and/or 
 modify it under the terms of the GNU Library General Public 
