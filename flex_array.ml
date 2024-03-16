@@ -30,7 +30,23 @@
       J. Functional Programming 7 (6) 661–666, November 1997
 *)
 
-type 'a tree = Empty | Node of 'a tree * 'a * 'a tree
+type 'a tree =
+  | Empty
+  | Node of 'a tree * 'a * 'a tree
+
+(** Invariant: a flexible array of size `n>=1` is a tree `Node(l, x, r)` where
+  - `x` is the element at index `0`;
+  - `l` is a flexible array with the elements at indices `2i+1`;
+  - 'r' is a flexible array with the elements at indices `2i+2`.
+
+  This implies |r| <= |l| <= |r|+1, and a flexible array is thus a
+  balanced tree. (When `n` is odd, the two subtrees have the same
+  size, and when `n` is even, `l` has one more element than `r`.)
+
+  The structure of the tree is entirely defined by the value of
+  `n`. This is why flexible arrays can be compared with OCaml's
+  structural equality.
+*)
 
 type 'a t = {
   size: int;
@@ -136,7 +152,7 @@ let cons v a =
 (* low removal *)
 let rec tail_aux = function
   | Empty -> assert false
-  | Node (Empty, _, Empty) -> Empty
+  | Node (Empty, _, _(*Empty*)) -> Empty
   | Node (l, _, r) -> Node (r, get_tree l 0, tail_aux l)
 
 let tail a =
@@ -155,7 +171,7 @@ let snoc a v =
 (* high removal *)
 let rec liat_aux s = function
   | Empty -> assert false
-  | Node (Empty, _, Empty) -> Empty
+  | Node (Empty, _, _(*Empty*)) -> Empty
   | Node (l, x, r) -> if s mod 2 = 0 then Node (liat_aux (s / 2) l, x, r)
                                      else Node (l, x, liat_aux (s / 2) r)
 

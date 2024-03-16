@@ -1,4 +1,7 @@
 
+  - code documentation
+  - slight optimization in functions `tail` and `liat`
+
 # 1.2.0
   - added `pp`, `mapi`
 
