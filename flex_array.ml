@@ -151,9 +151,9 @@ let cons v a =
 
 (* low removal *)
 let rec tail_aux = function
-  | Empty -> assert false
-  | Node (Empty, _, _(*Empty*)) -> Empty
-  | Node (l, _, r) -> Node (r, get_tree l 0, tail_aux l)
+  | Node (l, _, Empty) -> l (* covers size 1 and 2 *)
+  | Node (Node (_,x,_) as l, _, r) -> Node (r, x, tail_aux l)
+  | _ -> assert false
 
 let tail a =
   if a.size = 0 then invalid_arg "tail";

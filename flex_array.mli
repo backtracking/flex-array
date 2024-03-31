@@ -39,7 +39,7 @@ val empty: 'a t
 
 val make: int -> 'a -> 'a t
 (** [make n v] returns a flexible array of size [n], initialized with [v].
-    All  the elements of this new array are physically equal to [v]
+    All the elements of this new array are physically equal to [v]
     (in the sense of the [==] predicate).
     Time complexity O(log n). *)
 
