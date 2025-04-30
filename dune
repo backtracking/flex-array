@@ -7,3 +7,10 @@
  (name test)
  (modules test)
  (libraries flex-array alcotest))
+
+(executable
+ (name bench)
+ (modules bench)
+ (promote (until-clean))
+ (libraries flex-array))
+

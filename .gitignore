@@ -1,3 +1,4 @@
 dist/
 _build/
 .merlin
+bench.exe
